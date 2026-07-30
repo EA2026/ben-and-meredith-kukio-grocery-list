@@ -5,6 +5,7 @@ import { GroceryItem } from "@/lib/masterList";
 
 interface Props {
   category: string;
+  colorIndex: number;
   items: GroceryItem[];
   checked: Record<string, boolean>;
   quantities: Record<string, string>;
@@ -15,8 +16,56 @@ interface Props {
   onRemove: (id: string) => void;
 }
 
+// Each category gets its own accent color, cycling through this palette —
+// gives the list visual rhythm without needing a color picked per item.
+const ACCENTS = [
+  {
+    bg: "bg-manifest-coral",
+    border: "border-manifest-coral",
+    text: "text-manifest-coral",
+    focusBorder: "focus:border-manifest-coral",
+    hoverBg: "hover:bg-manifest-coral",
+  },
+  {
+    bg: "bg-manifest-lagoon",
+    border: "border-manifest-lagoon",
+    text: "text-manifest-lagoon",
+    focusBorder: "focus:border-manifest-lagoon",
+    hoverBg: "hover:bg-manifest-lagoon",
+  },
+  {
+    bg: "bg-tropic-gold",
+    border: "border-tropic-gold",
+    text: "text-tropic-gold",
+    focusBorder: "focus:border-tropic-gold",
+    hoverBg: "hover:bg-tropic-gold",
+  },
+  {
+    bg: "bg-tropic-plum",
+    border: "border-tropic-plum",
+    text: "text-tropic-plum",
+    focusBorder: "focus:border-tropic-plum",
+    hoverBg: "hover:bg-tropic-plum",
+  },
+  {
+    bg: "bg-tropic-leaf",
+    border: "border-tropic-leaf",
+    text: "text-tropic-leaf",
+    focusBorder: "focus:border-tropic-leaf",
+    hoverBg: "hover:bg-tropic-leaf",
+  },
+  {
+    bg: "bg-tropic-sky",
+    border: "border-tropic-sky",
+    text: "text-tropic-sky",
+    focusBorder: "focus:border-tropic-sky",
+    hoverBg: "hover:bg-tropic-sky",
+  },
+];
+
 export default function CategorySection({
   category,
+  colorIndex,
   items,
   checked,
   quantities,
@@ -27,6 +76,7 @@ export default function CategorySection({
   onRemove,
 }: Props) {
   const [draft, setDraft] = useState("");
+  const accent = ACCENTS[colorIndex % ACCENTS.length];
 
   const checkedCount = items.filter((i) => checked[i.id]).length;
 
@@ -39,11 +89,11 @@ export default function CategorySection({
 
   return (
     <section className="mb-8 break-inside-avoid">
-      <div className="flex items-baseline justify-between border-b-2 border-manifest-ink/80 pb-1.5 mb-3">
+      <div className={`flex items-baseline justify-between border-b-2 ${accent.border} pb-1.5 mb-3`}>
         <h2 className="font-mono text-sm tracking-[0.2em] uppercase text-manifest-ink">
           {category}
         </h2>
-        <span className="font-mono text-xs text-manifest-inkSoft tabular-nums">
+        <span className={`font-mono text-xs ${accent.text} font-semibold tabular-nums`}>
           {checkedCount}/{items.length}
         </span>
       </div>
@@ -54,7 +104,7 @@ export default function CategorySection({
           return (
             <li
               key={item.id}
-              className="group flex items-center gap-3 rounded-sm px-1 py-1 -mx-1 hover:bg-manifest-ink/[0.04]"
+              className="group flex items-center gap-3 rounded-lg px-1 py-1 -mx-1 hover:bg-manifest-ink/[0.04]"
             >
               <button
                 type="button"
@@ -62,8 +112,8 @@ export default function CategorySection({
                 aria-checked={isChecked}
                 aria-label={item.name}
                 onClick={() => onToggle(item.id)}
-                className={`shrink-0 h-5 w-5 border-2 border-manifest-ink flex items-center justify-center transition-colors ${
-                  isChecked ? "bg-manifest-lagoon border-manifest-lagoon" : "bg-manifest-paper"
+                className={`shrink-0 h-6 w-6 rounded-full border-2 border-manifest-ink flex items-center justify-center transition-colors ${
+                  isChecked ? `${accent.bg} ${accent.border}` : "bg-manifest-paper"
                 }`}
               >
                 {isChecked && (
@@ -93,7 +143,7 @@ export default function CategorySection({
                       e.stopPropagation();
                       onPromote(item.id);
                     }}
-                    className="ml-1.5 text-[11px] font-mono uppercase tracking-wide text-manifest-lagoon border border-manifest-lagoon/50 px-1 rounded-sm hover:bg-manifest-lagoon hover:text-manifest-paper"
+                    className={`ml-1.5 text-[11px] font-mono uppercase tracking-wide ${accent.text} border ${accent.border}/50 px-1.5 rounded-full ${accent.hoverBg} hover:text-manifest-paper`}
                   >
                     new
                   </button>
@@ -112,7 +162,7 @@ export default function CategorySection({
                 onChange={(e) => onQtyChange(item.id, e.target.value)}
                 placeholder="qty"
                 aria-label={`Quantity for ${item.name}`}
-                className="w-14 shrink-0 bg-transparent border-b border-manifest-line text-right font-mono text-sm px-1 py-0.5 focus:border-manifest-lagoon"
+                className={`w-14 shrink-0 bg-transparent border-b-2 border-manifest-line text-right font-mono text-sm px-1 py-0.5 ${accent.focusBorder}`}
               />
 
               <button
@@ -137,12 +187,12 @@ export default function CategorySection({
             if (e.key === "Enter") submitDraft();
           }}
           placeholder={`Add item to ${category.toLowerCase()}…`}
-          className="flex-1 bg-transparent border-b border-dashed border-manifest-line text-sm px-1 py-1 placeholder:text-manifest-inkSoft/50 focus:border-manifest-lagoon"
+          className={`flex-1 bg-transparent border-b-2 border-dashed border-manifest-line text-sm px-1 py-1 placeholder:text-manifest-inkSoft/50 ${accent.focusBorder}`}
         />
         <button
           type="button"
           onClick={submitDraft}
-          className="font-mono text-xs uppercase tracking-wide text-manifest-lagoon hover:text-manifest-lagoonDark px-1"
+          className={`font-mono text-xs uppercase tracking-wide ${accent.text} hover:opacity-70 px-1`}
         >
           + add
         </button>
