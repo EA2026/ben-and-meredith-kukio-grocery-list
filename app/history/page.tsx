@@ -28,7 +28,7 @@ export default function HistoryPage() {
       if (!res.ok) {
         setError(
           data.error ??
-            "Couldn't reach the shared history. If this is the first time using the app, the shared storage (Upstash Redis) may not be connected yet in Vercel — see the README's setup step."
+            "Couldn't reach the shared history. If this is the first time using the app, Neon may not be connected yet in Vercel — see the README's setup step."
         );
         return;
       }
@@ -51,7 +51,7 @@ export default function HistoryPage() {
       if (!res.ok) {
         setError(
           data.error ??
-            "Couldn't load the historical visits. The shared storage (Upstash Redis) may not be connected yet — see the README's setup step."
+            "Couldn't load the historical visits. Neon may not be connected yet — see the README's setup step."
         );
         return;
       }
@@ -141,14 +141,6 @@ export default function HistoryPage() {
                             Trip request:{" "}
                           </span>
                           {req.groceryNotes}
-                        </p>
-                      )}
-                      {req.amenityNotes && (
-                        <p>
-                          <span className="font-mono text-xs uppercase text-manifest-coral">
-                            Amenities/issues:{" "}
-                          </span>
-                          {req.amenityNotes}
                         </p>
                       )}
                     </div>
