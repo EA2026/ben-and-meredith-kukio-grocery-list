@@ -1,4 +1,4 @@
-# Kukio Provisioning Manifest
+# Before You Land — Kukio Grocery Checklist
 
 A standing grocery checklist for the White family's Kukio trips. Standing items
 (★) are pre-checked from past visits; new items show a "new" badge until

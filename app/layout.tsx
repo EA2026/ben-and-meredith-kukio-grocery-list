@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Kukio Provisioning Manifest",
+  title: "Before You Land · Kukio",
   description: "Ben & Meredith White's standing grocery checklist for Kukio, built to be checked off before every trip.",
 };
 

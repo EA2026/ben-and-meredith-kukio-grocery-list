@@ -31,35 +31,54 @@ export default function Home() {
   const checkedTotal = Object.values(state.checked).filter(Boolean).length;
 
   return (
-    <main className="min-h-screen px-4 py-10 sm:py-14">
-      <div className="mx-auto max-w-2xl">
-        {/* Header */}
-        <header className="mb-10 relative">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="font-mono text-xs uppercase tracking-[0.3em] text-manifest-lagoon mb-2">
-                Ben &amp; Meredith White · Hawaii
-              </p>
-              <h1 className="font-mono text-3xl sm:text-4xl font-bold tracking-tight leading-none">
-                Kukio Provisioning
-                <br />
-                Manifest
-              </h1>
-              <p className="mt-3 text-sm text-manifest-inkSoft max-w-sm">
-                Check what you want this trip. Standing items (
-                <span className="text-manifest-coral">★</span>) are pre-checked from past visits —
-                just uncheck anything you don't need and add anything new.
-              </p>
-            </div>
-            <div className="stamp shrink-0 hidden sm:flex flex-col items-center justify-center h-20 w-20 rounded-full border-2 border-manifest-coral text-manifest-coral font-mono text-[10px] uppercase tracking-widest text-center leading-tight">
-              Provision
-              <br />
-              Before
-              <br />
-              Departure
-            </div>
+    <main className="min-h-screen">
+      {/* Hero */}
+      <section className="horizon-hero px-4 pt-16 pb-24 sm:pt-24 sm:pb-32">
+        <div
+          className="horizon-glow"
+          style={{ width: 140, height: 140, top: "18%", left: "50%", transform: "translateX(-50%)" }}
+          aria-hidden="true"
+        />
+        <div className="mx-auto max-w-2xl relative">
+          <p className="hero-eyebrow font-mono text-[11px] uppercase text-horizon-goldSoft/80 mb-5">
+            Ben &amp; Meredith White · Kukio, Hawaii
+          </p>
+          <h1 className="font-display text-5xl sm:text-6xl leading-[0.95] text-horizon-cream">
+            Before
+            <br />
+            You Land
+          </h1>
+          <p className="mt-6 max-w-sm text-[15px] leading-relaxed text-horizon-cream/70">
+            The house, stocked before you walk in. Check what you want this
+            trip — your usual picks (
+            <span className="text-horizon-gold">★</span>) are already
+            checked. Uncheck anything you don&apos;t need, add anything new.
+          </p>
+        </div>
+
+        {/* Horizon wave divider into the paper body */}
+        <svg
+          className="horizon-wave"
+          viewBox="0 0 1440 90"
+          preserveAspectRatio="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <path
+            d="M0,40 C240,90 480,0 720,30 C960,60 1200,10 1440,45 L1440,90 L0,90 Z"
+            fill="#EFE8D8"
+          />
+        </svg>
+      </section>
+
+      {/* Checklist body */}
+      <div className="px-4 pt-10 pb-14">
+        <div className="mx-auto max-w-2xl">
+          <div className="flex items-baseline justify-end mb-8">
+            <p className="font-mono text-xs text-manifest-inkSoft">
+              <span className="text-manifest-coral">★</span> = usual pick
+            </p>
           </div>
-        </header>
 
         {/* Category sections */}
         {CATEGORY_ORDER.map((category) => {
@@ -115,6 +134,7 @@ export default function Home() {
             Generate list →
           </button>
         </footer>
+        </div>
       </div>
 
       {showExport && (
