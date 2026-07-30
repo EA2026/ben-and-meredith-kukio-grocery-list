@@ -13,7 +13,6 @@ interface DraftState {
   checked: Record<string, boolean>;
   quantities: Record<string, string>;
   groceryNotes: string;
-  amenityNotes: string;
   visitDate: string;
 }
 
@@ -24,7 +23,7 @@ function defaultDraft(items: GroceryItem[]): DraftState {
     checked[item.id] = item.status === "standing";
     if (item.defaultQty) quantities[item.id] = item.defaultQty;
   });
-  return { checked, quantities, groceryNotes: "", amenityNotes: "", visitDate: todayISO() };
+  return { checked, quantities, groceryNotes: "", visitDate: todayISO() };
 }
 
 export function useManifestState() {
@@ -124,10 +123,6 @@ export function useManifestState() {
     setDraft((prev) => (prev ? { ...prev, groceryNotes: notes } : prev));
   }, []);
 
-  const setAmenityNotes = useCallback((notes: string) => {
-    setDraft((prev) => (prev ? { ...prev, amenityNotes: notes } : prev));
-  }, []);
-
   const setVisitDate = useCallback((date: string) => {
     setDraft((prev) => (prev ? { ...prev, visitDate: date } : prev));
   }, []);
@@ -193,7 +188,6 @@ export function useManifestState() {
           createdAt: new Date().toISOString(),
           items: requestItems,
           groceryNotes: draft.groceryNotes,
-          amenityNotes: draft.amenityNotes,
         }),
       });
 
@@ -213,7 +207,6 @@ export function useManifestState() {
           checked: draft.checked,
           quantities: draft.quantities,
           tripNotes: draft.groceryNotes,
-          amenityNotes: draft.amenityNotes,
           visitDate: draft.visitDate,
         }
       : null;
@@ -225,7 +218,6 @@ export function useManifestState() {
     toggleChecked,
     setQuantity,
     setTripNotes: setGroceryNotes,
-    setAmenityNotes,
     setVisitDate,
     addItem,
     promoteToStanding,
