@@ -8,7 +8,6 @@ interface Props {
   checked: Record<string, boolean>;
   quantities: Record<string, string>;
   tripNotes: string;
-  amenityNotes: string;
   visitDate: string;
   submitting: boolean;
   onSubmit: () => Promise<{ ok: boolean; error?: string }>;
@@ -30,7 +29,6 @@ export default function ExportPanel({
   checked,
   quantities,
   tripNotes,
-  amenityNotes,
   visitDate,
   submitting,
   onSubmit,
@@ -63,14 +61,8 @@ export default function ExportPanel({
       lines.push("");
     }
 
-    if (amenityNotes.trim()) {
-      lines.push("AMENITIES / MAINTENANCE ISSUES");
-      lines.push(`  ${amenityNotes.trim()}`);
-      lines.push("");
-    }
-
     return lines.join("\n").trim();
-  }, [items, checked, quantities, tripNotes, amenityNotes, visitDate]);
+  }, [items, checked, quantities, tripNotes, visitDate]);
 
   async function handleCopy() {
     try {
