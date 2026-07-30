@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useManifestState } from "@/lib/useManifestState";
 import { CATEGORY_ORDER } from "@/lib/masterList";
 import CategorySection from "@/components/CategorySection";
 import ExportPanel from "@/components/ExportPanel";
-import HistoryPanel from "@/components/HistoryPanel";
 
 export default function Home() {
   const {
@@ -25,7 +25,6 @@ export default function Home() {
   } = useManifestState();
 
   const [showExport, setShowExport] = useState(false);
-  const [showHistory, setShowHistory] = useState(false);
 
   if (!state) {
     return (
@@ -51,13 +50,12 @@ export default function Home() {
             <p className="hero-eyebrow font-mono text-[11px] uppercase text-horizon-goldSoft/80 mb-5">
               Kukio, Hawaii
             </p>
-            <button
-              type="button"
-              onClick={() => setShowHistory(true)}
+            <Link
+              href="/history"
               className="font-mono text-[11px] uppercase tracking-widest text-horizon-cream/80 border border-horizon-cream/30 px-3 py-1.5 hover:bg-horizon-cream/10 shrink-0"
             >
               Past visits
-            </button>
+            </Link>
           </div>
           <h1 className="font-display text-5xl sm:text-6xl leading-[0.95] text-horizon-cream">
             Ben &amp; Meredith&apos;s
@@ -196,8 +194,6 @@ export default function Home() {
           onClose={() => setShowExport(false)}
         />
       )}
-
-      {showHistory && <HistoryPanel onClose={() => setShowHistory(false)} />}
     </main>
   );
 }
