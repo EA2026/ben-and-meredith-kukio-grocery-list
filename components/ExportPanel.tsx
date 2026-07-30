@@ -16,7 +16,7 @@ export default function ExportPanel({ items, checked, quantities, tripNotes, onC
 
   const listText = useMemo(() => {
     const lines: string[] = [];
-    lines.push("KUKIO PROVISIONING LIST");
+    lines.push("BEN & MEREDITH — GROCERY LIST REQUEST");
     lines.push(new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }));
     lines.push("");
 
