@@ -15,7 +15,6 @@ export default function Home() {
     toggleChecked,
     setQuantity,
     setTripNotes,
-    setAmenityNotes,
     setVisitDate,
     addItem,
     promoteToStanding,
@@ -144,20 +143,6 @@ export default function Home() {
             />
           </section>
 
-          {/* Amenities / maintenance requests */}
-          <section className="mb-10">
-            <div className="flex items-baseline justify-between border-b-2 border-manifest-ink/80 pb-1.5 mb-3">
-              <h2 className="font-mono text-sm tracking-[0.2em] uppercase">Amenities &amp; Maintenance</h2>
-            </div>
-            <textarea
-              value={state.amenityNotes}
-              onChange={(e) => setAmenityNotes(e.target.value)}
-              placeholder="Anything that needs attention before you arrive — AC, pool, a broken fixture, etc."
-              rows={3}
-              className="w-full bg-white/40 border border-manifest-line text-sm p-3 resize-none placeholder:text-manifest-inkSoft/50 focus:border-manifest-lagoon"
-            />
-          </section>
-
           {/* Actions */}
           <footer className="sticky bottom-4 flex flex-wrap items-center gap-3 bg-manifest-paper/95 backdrop-blur-sm border-2 border-manifest-ink px-4 py-3 shadow-[4px_4px_0_0_rgba(34,48,63,0.9)]">
             <span className="font-mono text-xs text-manifest-inkSoft tabular-nums mr-auto">
@@ -187,7 +172,6 @@ export default function Home() {
           checked={state.checked}
           quantities={state.quantities}
           tripNotes={state.tripNotes}
-          amenityNotes={state.amenityNotes}
           visitDate={state.visitDate}
           submitting={submitting}
           onSubmit={submitRequest}
