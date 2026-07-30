@@ -50,3 +50,84 @@ export async function addRequest(req: VisitRequest): Promise<VisitRequest[]> {
   await redis.set(REQUESTS_KEY, updated);
   return updated;
 }
+
+// The two real past visits pulled from the household's own grocery records
+// (12/31/24 and 5/26/25). Only used to seed history the first time — never
+// overwrites anything if requests already exist.
+const HISTORICAL_VISITS: VisitRequest[] = [
+  {
+    id: "seed-2025-05-26",
+    visitDate: "2025-05-26",
+    createdAt: "2025-05-26T00:00:00.000Z",
+    groceryNotes: "",
+    amenityNotes: "",
+    items: [
+      { name: "English muffins (Thomas' brand)", category: "Breakfast", qty: "2 boxes" },
+      { name: "Coffeemate French Vanilla creamer", category: "Coffee & Tea" },
+      { name: "Half and half", category: "Dairy & Eggs" },
+      { name: "Pineapple", category: "Fruits", qty: "2" },
+      { name: "Bananas", category: "Fruits", qty: "6" },
+      { name: "Greek yogurt, coconut flavor (Dannon or Chobani)", category: "Dairy & Eggs", qty: "6" },
+      { name: "Tortilla chips", category: "Snacks" },
+      { name: "Salsa, medium", category: "Condiments" },
+      { name: "Avocados", category: "Fruits", qty: "3" },
+      { name: "Limes", category: "Fruits", qty: "5" },
+      { name: "Kua Bay IPA (12 pack)", category: "Alcohol" },
+      { name: "Big Wave (12 pack)", category: "Alcohol" },
+      { name: "Sauvignon Blanc, Oyster Bay or similar (4 bottles)", category: "Alcohol" },
+      { name: "Eggs (dozen)", category: "Dairy & Eggs" },
+      { name: "Bacon (2 lbs)", category: "Meat" },
+      { name: "La Croix or plain soda water (12 pack)", category: "Beverages" },
+      { name: "Broccoli", category: "Vegetables", qty: "4 heads" },
+    ],
+  },
+  {
+    id: "seed-2024-12-31",
+    visitDate: "2024-12-31",
+    createdAt: "2024-12-31T00:00:00.000Z",
+    groceryNotes: "",
+    amenityNotes: "",
+    items: [
+      { name: "Coffeemate French Vanilla creamer", category: "Coffee & Tea" },
+      { name: "English muffins (Thomas' brand)", category: "Breakfast" },
+      { name: "Bananas", category: "Fruits", qty: "6" },
+      { name: "Pineapple", category: "Fruits", qty: "1" },
+      { name: "Fuji apples", category: "Fruits", qty: "6" },
+      { name: "POG juice (quart)", category: "Beverages" },
+      { name: "Flour tortillas", category: "Pantry" },
+      { name: "Cheddar cheese block (medium)", category: "Dairy & Eggs" },
+      { name: "Sour cream (pint)", category: "Dairy & Eggs" },
+      { name: "Refried beans (can)", category: "Pantry" },
+      { name: "Taco seasoning (packet)", category: "Pantry" },
+      { name: "Rotisserie chicken", category: "Meat" },
+      { name: "Sliced almonds", category: "Snacks" },
+      { name: "Annie's Asian salad dressing or similar", category: "Condiments" },
+      { name: "Romaine lettuce", category: "Vegetables" },
+      { name: "Wonton chips", category: "Snacks" },
+      { name: "Green onions", category: "Vegetables" },
+      { name: "Limes", category: "Fruits", qty: "5" },
+      { name: "Avocados", category: "Fruits", qty: "3" },
+      { name: "Salsa, medium", category: "Condiments", qty: "1" },
+      { name: "Tortilla chips", category: "Snacks", qty: "1 bag" },
+      { name: "Chicken breast, boneless skinless (1.5–2 lbs)", category: "Meat" },
+      { name: "Teriyaki marinade", category: "Condiments" },
+      { name: "Fettuccine pasta (box)", category: "Pantry" },
+      { name: "Heavy cream (pint)", category: "Dairy & Eggs" },
+      { name: "Garlic (head)", category: "Vegetables" },
+      { name: "Parmesan cheese, grated", category: "Dairy & Eggs" },
+      { name: "Broccoli", category: "Vegetables", qty: "florets" },
+      { name: "Sourdough bread, sliced round", category: "Bakery" },
+      { name: "Triscuits", category: "Snacks" },
+      { name: "Potato chips", category: "Snacks" },
+      { name: "Salami, sliced", category: "Meat" },
+      { name: "String cheese", category: "Dairy & Eggs" },
+    ],
+  },
+];
+
+export async function seedHistoricalRequestsIfEmpty(): Promise<VisitRequest[]> {
+  const existing = await getRequests();
+  if (existing.length > 0) return existing;
+  await redis.set(REQUESTS_KEY, HISTORICAL_VISITS);
+  return HISTORICAL_VISITS;
+}

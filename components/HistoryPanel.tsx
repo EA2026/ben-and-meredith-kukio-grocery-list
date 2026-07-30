@@ -21,23 +21,31 @@ export default function HistoryPanel({ onClose }: Props) {
   const [requests, setRequests] = useState<VisitRequest[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
+  const [seeding, setSeeding] = useState(false);
 
-  useEffect(() => {
-    let cancelled = false;
+  function loadRequests() {
     fetch("/api/requests")
       .then((res) => res.json())
-      .then((data) => {
-        if (cancelled) return;
-        setRequests(data.requests ?? []);
-      })
-      .catch(() => {
-        if (cancelled) return;
-        setError("Couldn't load past visits right now.");
-      });
-    return () => {
-      cancelled = true;
-    };
+      .then((data) => setRequests(data.requests ?? []))
+      .catch(() => setError("Couldn't load past visits right now."));
+  }
+
+  useEffect(() => {
+    loadRequests();
   }, []);
+
+  async function handleSeed() {
+    setSeeding(true);
+    try {
+      const res = await fetch("/api/requests/seed", { method: "POST" });
+      const data = await res.json();
+      setRequests(data.requests ?? []);
+    } catch {
+      setError("Couldn't load the historical visits right now.");
+    } finally {
+      setSeeding(false);
+    }
+  }
 
   return (
     <div
@@ -71,10 +79,20 @@ export default function HistoryPanel({ onClose }: Props) {
           )}
 
           {!error && requests !== null && requests.length === 0 && (
-            <p className="text-sm text-manifest-inkSoft">
-              Nothing submitted yet. Once a request is sent from the checklist below, it'll show up
-              here for everyone.
-            </p>
+            <div className="space-y-3">
+              <p className="text-sm text-manifest-inkSoft">
+                Nothing submitted yet. Once a request is sent from the checklist below, it'll show up
+                here for everyone.
+              </p>
+              <button
+                type="button"
+                onClick={handleSeed}
+                disabled={seeding}
+                className="font-mono text-xs uppercase tracking-wide border-2 border-manifest-ink px-4 py-2 hover:bg-manifest-ink hover:text-manifest-paper disabled:opacity-60"
+              >
+                {seeding ? "Loading…" : "Load past visits (12/31/24 & 5/26/25)"}
+              </button>
+            </div>
           )}
 
           {!error &&
