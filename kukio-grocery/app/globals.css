@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  --font-sans: "Public Sans", "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Iowan Old Style", "Palatino Linotype", "Georgia", ui-serif, serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #EAE3D2;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(34, 48, 63, 0.07) 1px, transparent 0);
+  background-size: 22px 22px;
+}
+
+/* Visible keyboard focus everywhere */
+:focus-visible {
+  outline: 2px solid #2D6E78;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.horizon-hero {
+  background: linear-gradient(180deg, #0F2A38 0%, #153A4A 55%, #1F5563 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.horizon-glow {
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(227, 168, 87, 0.9) 0%, rgba(227, 168, 87, 0.15) 60%, transparent 75%);
+  filter: blur(2px);
+}
+
+.horizon-wave {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  line-height: 0;
+}
+
+.hero-eyebrow {
+  letter-spacing: 0.35em;
+}
+
+.checkbox-tick {
+  clip-path: polygon(14% 44%, 0 65%, 40% 100%, 100% 16%, 78% 0%, 38% 62%);
+}
+
+::selection {
+  background-color: #2D6E78;
+  color: #EAE3D2;
+}
