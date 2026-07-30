@@ -13,15 +13,15 @@ html {
 }
 
 body {
-  background-color: #EAE3D2;
+  background-color: #FBF6EC;
   background-image:
-    radial-gradient(circle at 1px 1px, rgba(34, 48, 63, 0.07) 1px, transparent 0);
+    radial-gradient(circle at 1px 1px, rgba(18, 38, 31, 0.06) 1px, transparent 0);
   background-size: 22px 22px;
 }
 
 /* Visible keyboard focus everywhere */
 :focus-visible {
-  outline: 2px solid #2D6E78;
+  outline: 2px solid #0B6E64;
   outline-offset: 2px;
 }
 
@@ -35,7 +35,7 @@ body {
 }
 
 .horizon-hero {
-  background: linear-gradient(180deg, #0F2A38 0%, #153A4A 55%, #1F5563 100%);
+  background: linear-gradient(165deg, #0B6E64 0%, #C24A6E 55%, #F4B740 100%);
   position: relative;
   overflow: hidden;
 }
@@ -43,8 +43,13 @@ body {
 .horizon-glow {
   position: absolute;
   border-radius: 9999px;
-  background: radial-gradient(circle, rgba(227, 168, 87, 0.9) 0%, rgba(227, 168, 87, 0.15) 60%, transparent 75%);
+  background: radial-gradient(circle, rgba(244, 183, 64, 0.95) 0%, rgba(244, 183, 64, 0.2) 60%, transparent 75%);
   filter: blur(2px);
+}
+
+.bloom-petal {
+  mix-blend-mode: multiply;
+  opacity: 0.85;
 }
 
 .horizon-wave {
@@ -64,6 +69,6 @@ body {
 }
 
 ::selection {
-  background-color: #2D6E78;
-  color: #EAE3D2;
+  background-color: #0B6E64;
+  color: #FBF6EC;
 }
