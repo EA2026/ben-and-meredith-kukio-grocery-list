@@ -41,12 +41,12 @@ export default function Home() {
         />
         <div className="mx-auto max-w-2xl relative">
           <p className="hero-eyebrow font-mono text-[11px] uppercase text-horizon-goldSoft/80 mb-5">
-            Ben &amp; Meredith White · Kukio, Hawaii
+            Kukio, Hawaii
           </p>
           <h1 className="font-display text-5xl sm:text-6xl leading-[0.95] text-horizon-cream">
-            Before
+            Ben &amp; Meredith&apos;s
             <br />
-            You Land
+            Grocery List
           </h1>
           <p className="mt-6 max-w-sm text-[15px] leading-relaxed text-horizon-cream/70">
             The house, stocked before you walk in. Check what you want this
