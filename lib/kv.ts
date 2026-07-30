@@ -1,27 +1,68 @@
-import { Redis } from "@upstash/redis";
+import { neon } from "@neondatabase/serverless";
 import { GroceryItem, INITIAL_MASTER_LIST } from "./masterList";
 
-// Vercel's Upstash Redis integration sets UPSTASH_REDIS_REST_URL / TOKEN.
-// Some setups (or older KV migrations) instead expose KV_REST_API_URL / TOKEN
-// — support both so this works regardless of which naming Vercel gives you.
-const url = process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL ?? "";
-const token = process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN ?? "";
+// Vercel's Neon integration sets one of these automatically once connected.
+const connectionString =
+  process.env.DATABASE_URL ??
+  process.env.POSTGRES_URL ??
+  process.env.NEON_DATABASE_URL ??
+  "";
 
-const redis = new Redis({ url, token });
+function assertConfigured() {
+  if (!connectionString) {
+    throw new Error(
+      "Shared storage isn't configured yet — connect Neon in Vercel's Storage tab, or make sure DATABASE_URL is set."
+    );
+  }
+}
+
+let tableReady = false;
+
+async function getSql() {
+  assertConfigured();
+  const sql = neon(connectionString);
+  if (!tableReady) {
+    // Idempotent — safe to run on every cold start.
+    await sql`
+      CREATE TABLE IF NOT EXISTS kv_store (
+        key TEXT PRIMARY KEY,
+        value JSONB NOT NULL
+      )
+    `;
+    tableReady = true;
+  }
+  return sql;
+}
 
 const CATALOG_KEY = "ben-meredith-catalog-v1";
 const REQUESTS_KEY = "ben-meredith-requests-v1";
 
+async function readKey<T>(key: string): Promise<T | null> {
+  const sql = await getSql();
+  const rows = await sql`SELECT value FROM kv_store WHERE key = ${key}`;
+  if (rows.length === 0) return null;
+  return rows[0].value as T;
+}
+
+async function writeKey(key: string, value: unknown): Promise<void> {
+  const sql = await getSql();
+  await sql`
+    INSERT INTO kv_store (key, value)
+    VALUES (${key}, ${JSON.stringify(value)}::jsonb)
+    ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value
+  `;
+}
+
 export async function getCatalog(): Promise<GroceryItem[]> {
-  const existing = await redis.get<GroceryItem[]>(CATALOG_KEY);
+  const existing = await readKey<GroceryItem[]>(CATALOG_KEY);
   if (existing && existing.length > 0) return existing;
   // First run — seed the shared catalog from the historical analysis.
-  await redis.set(CATALOG_KEY, INITIAL_MASTER_LIST);
+  await writeKey(CATALOG_KEY, INITIAL_MASTER_LIST);
   return INITIAL_MASTER_LIST;
 }
 
 export async function saveCatalog(items: GroceryItem[]): Promise<void> {
-  await redis.set(CATALOG_KEY, items);
+  await writeKey(CATALOG_KEY, items);
 }
 
 export interface RequestItem {
@@ -40,14 +81,14 @@ export interface VisitRequest {
 }
 
 export async function getRequests(): Promise<VisitRequest[]> {
-  const existing = await redis.get<VisitRequest[]>(REQUESTS_KEY);
+  const existing = await readKey<VisitRequest[]>(REQUESTS_KEY);
   return existing ?? [];
 }
 
 export async function addRequest(req: VisitRequest): Promise<VisitRequest[]> {
   const all = await getRequests();
   const updated = [req, ...all];
-  await redis.set(REQUESTS_KEY, updated);
+  await writeKey(REQUESTS_KEY, updated);
   return updated;
 }
 
@@ -128,6 +169,6 @@ const HISTORICAL_VISITS: VisitRequest[] = [
 export async function seedHistoricalRequestsIfEmpty(): Promise<VisitRequest[]> {
   const existing = await getRequests();
   if (existing.length > 0) return existing;
-  await redis.set(REQUESTS_KEY, HISTORICAL_VISITS);
+  await writeKey(REQUESTS_KEY, HISTORICAL_VISITS);
   return HISTORICAL_VISITS;
 }
