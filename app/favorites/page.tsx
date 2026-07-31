@@ -4,6 +4,17 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { GroceryItem, CATEGORY_ORDER } from "@/lib/masterList";
 
+// Same accent cycle used on the main checklist, so categories look the same
+// wherever they show up.
+const ACCENTS = [
+  "bg-manifest-coral",
+  "bg-manifest-lagoon",
+  "bg-tropic-gold",
+  "bg-tropic-plum",
+  "bg-tropic-leaf",
+  "bg-tropic-sky",
+];
+
 export default function FavoritesPage() {
   const [items, setItems] = useState<GroceryItem[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -59,7 +70,9 @@ export default function FavoritesPage() {
             <p className="font-mono text-xs uppercase tracking-[0.3em] text-manifest-lagoon mb-2">
               Ben &amp; Meredith · Kukio
             </p>
-            <h1 className="font-display text-3xl sm:text-4xl text-manifest-ink">Usual List</h1>
+            <h1 className="inline-block bg-tropic-gold text-manifest-paper font-display text-3xl sm:text-4xl px-4 py-1 rounded">
+              Usual List
+            </h1>
           </div>
           <Link
             href="/"
@@ -89,39 +102,47 @@ export default function FavoritesPage() {
           </p>
         )}
 
-        {!error &&
-          items !== null &&
-          standingItems.length > 0 &&
-          CATEGORY_ORDER.map((category) => {
-            const catItems = standingItems.filter((i) => i.category === category);
-            if (catItems.length === 0) return null;
-            return (
-              <section key={category} className="mb-6">
-                <h2 className="font-mono text-xs tracking-[0.2em] uppercase text-manifest-inkSoft border-b border-manifest-line pb-1 mb-2">
-                  {category}
-                </h2>
-                <ul className="space-y-1">
-                  {catItems.map((item) => (
-                    <li key={item.id} className="flex items-center gap-3 py-1">
-                      <button
-                        type="button"
-                        onClick={() => toggleItem(item.id, false)}
-                        disabled={saving === item.id}
-                        aria-label={`Remove ${item.name} from usual list`}
-                        className="shrink-0 text-lg leading-none text-tropic-gold hover:opacity-60 disabled:opacity-40"
-                      >
-                        ★
-                      </button>
-                      <span className="text-sm text-manifest-ink">
-                        {item.name}
-                        {item.defaultQty ? ` (${item.defaultQty})` : ""}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            );
-          })}
+        <div className="grid sm:grid-cols-2 gap-4">
+          {!error &&
+            items !== null &&
+            standingItems.length > 0 &&
+            CATEGORY_ORDER.map((category, index) => {
+              const catItems = standingItems.filter((i) => i.category === category);
+              if (catItems.length === 0) return null;
+              const accentBg = ACCENTS[index % ACCENTS.length];
+              return (
+                <section
+                  key={category}
+                  className="bg-white/60 border border-manifest-line rounded-xl p-4 h-fit"
+                >
+                  <span
+                    className={`inline-block ${accentBg} text-manifest-paper font-mono text-xs font-bold tracking-[0.2em] uppercase px-3 py-1.5 rounded mb-3`}
+                  >
+                    {category}
+                  </span>
+                  <ul className="space-y-1.5">
+                    {catItems.map((item) => (
+                      <li key={item.id} className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => toggleItem(item.id, false)}
+                          disabled={saving === item.id}
+                          aria-label={`Remove ${item.name} from usual list`}
+                          className="shrink-0 text-lg leading-none text-tropic-gold hover:opacity-60 disabled:opacity-40"
+                        >
+                          ★
+                        </button>
+                        <span className="text-sm text-manifest-ink">
+                          {item.name}
+                          {item.defaultQty ? ` (${item.defaultQty})` : ""}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              );
+            })}
+        </div>
       </div>
     </main>
   );
