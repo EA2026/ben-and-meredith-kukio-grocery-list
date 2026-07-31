@@ -18,6 +18,7 @@ export default function Home() {
     setVisitDate,
     addItem,
     promoteToStanding,
+    demoteToCandidate,
     removeItem,
     resetTrip,
     submitRequest,
@@ -57,12 +58,20 @@ export default function Home() {
             <p className="hero-eyebrow font-mono text-[11px] uppercase text-horizon-goldSoft/90 mb-5">
               Kukio, Hawaii
             </p>
-            <Link
-              href="/history"
-              className="font-mono text-[11px] uppercase tracking-widest text-horizon-cream border-2 border-horizon-cream/50 px-3 py-1.5 hover:bg-horizon-cream/15 shrink-0 rounded-full"
-            >
-              Past visits
-            </Link>
+            <div className="flex items-center gap-2 shrink-0">
+              <Link
+                href="/favorites"
+                className="font-mono text-[11px] uppercase tracking-widest text-horizon-cream border-2 border-horizon-cream/50 px-3 py-1.5 hover:bg-horizon-cream/15 rounded-full"
+              >
+                Usual list
+              </Link>
+              <Link
+                href="/history"
+                className="font-mono text-[11px] uppercase tracking-widest text-horizon-cream border-2 border-horizon-cream/50 px-3 py-1.5 hover:bg-horizon-cream/15 rounded-full"
+              >
+                Past visits
+              </Link>
+            </div>
           </div>
           <h1 className="font-display text-5xl sm:text-7xl leading-[0.92] text-horizon-cream drop-shadow-sm">
             Ben &amp; Meredith&apos;s
@@ -133,6 +142,7 @@ export default function Home() {
                 onQtyChange={setQuantity}
                 onAddItem={addItem}
                 onPromote={promoteToStanding}
+                onDemote={demoteToCandidate}
                 onRemove={removeItem}
               />
             );
