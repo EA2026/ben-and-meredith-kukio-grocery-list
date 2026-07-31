@@ -86,7 +86,17 @@ export async function getRequests(): Promise<VisitRequest[]> {
 
 export async function addRequest(req: VisitRequest): Promise<VisitRequest[]> {
   const all = await getRequests();
-  const updated = [req, ...all];
+  // Re-generating a list for a visit date that's already in history updates
+  // that entry instead of piling up duplicates — only one record per date.
+  const withoutSameDate = all.filter((r) => r.visitDate !== req.visitDate);
+  const updated = [req, ...withoutSameDate];
+  await writeKey(REQUESTS_KEY, updated);
+  return updated;
+}
+
+export async function deleteRequest(id: string): Promise<VisitRequest[]> {
+  const all = await getRequests();
+  const updated = all.filter((r) => r.id !== id);
   await writeKey(REQUESTS_KEY, updated);
   return updated;
 }
