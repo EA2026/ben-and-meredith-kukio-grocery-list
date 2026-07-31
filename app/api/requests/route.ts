@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getRequests, addRequest, VisitRequest } from "@/lib/kv";
+import { getRequests, addRequest, deleteRequest, VisitRequest } from "@/lib/kv";
 
 export const dynamic = "force-dynamic";
 
@@ -9,7 +9,8 @@ export async function GET() {
     return NextResponse.json({ requests });
   } catch (err) {
     console.error("GET /api/requests failed", err);
-    return NextResponse.json({ error: "Could not load past visit requests." }, { status: 500 });
+    const message = err instanceof Error ? err.message : "Could not load past visit requests.";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
@@ -23,6 +24,23 @@ export async function POST(request: Request) {
     return NextResponse.json({ requests });
   } catch (err) {
     console.error("POST /api/requests failed", err);
-    return NextResponse.json({ error: "Could not save this request." }, { status: 500 });
+    const message = err instanceof Error ? err.message : "Could not save this request.";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+    if (!id) {
+      return NextResponse.json({ error: "Missing id to delete." }, { status: 400 });
+    }
+    const requests = await deleteRequest(id);
+    return NextResponse.json({ requests });
+  } catch (err) {
+    console.error("DELETE /api/requests failed", err);
+    const message = err instanceof Error ? err.message : "Could not delete this visit.";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
