@@ -91,14 +91,19 @@ export default function CategorySection({
 
   return (
     <section className="mb-8 break-inside-avoid">
-      <div className={`flex items-baseline justify-between border-b-2 ${accent.border} pb-1.5 mb-3`}>
-        <h2 className="font-mono text-sm tracking-[0.2em] uppercase text-manifest-ink">
-          {category}
+      <div className="flex items-center justify-between mb-3 gap-3">
+        <h2 className="m-0">
+          <span
+            className={`inline-block ${accent.bg} text-manifest-paper font-mono text-xs font-bold tracking-[0.2em] uppercase px-3 py-1.5 rounded`}
+          >
+            {category}
+          </span>
         </h2>
-        <span className={`font-mono text-xs ${accent.text} font-semibold tabular-nums`}>
+        <span className={`font-mono text-xs ${accent.text} font-bold tabular-nums shrink-0`}>
           {checkedCount}/{items.length}
         </span>
       </div>
+      <div className="border-b border-manifest-line mb-3" />
 
       <ul className="space-y-2">
         {items.map((item) => {
