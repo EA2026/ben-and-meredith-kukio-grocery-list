@@ -84,7 +84,7 @@ export default function Home() {
             />
           </label>
 
-          <div className="mt-4 flex items-center gap-2">
+          <div className="mt-9 flex items-center gap-2">
             <Link
               href="/favorites"
               className="font-mono text-[11px] uppercase tracking-widest text-horizon-cream border-2 border-horizon-cream/50 px-3 py-1.5 hover:bg-horizon-cream/15 rounded-full"
