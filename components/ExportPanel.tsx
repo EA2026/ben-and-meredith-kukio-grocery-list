@@ -10,9 +10,11 @@ interface Props {
   tripNotes: string;
   visitDate: string;
   submitting: boolean;
-  onSubmit: () => Promise<{ ok: boolean; error?: string }>;
+  onSubmit: (submittedBy: string) => Promise<{ ok: boolean; error?: string }>;
   onClose: () => void;
 }
+
+const SUBMITTERS = ["Julie", "Ben", "Meredith", "Other"];
 
 function formatVisitDate(iso: string) {
   const [year, month, day] = iso.split("-").map(Number);
@@ -37,6 +39,7 @@ export default function ExportPanel({
   const [copyState, setCopyState] = useState<"idle" | "copied">("idle");
   const [submitState, setSubmitState] = useState<"idle" | "saved" | "error">("idle");
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submittedBy, setSubmittedBy] = useState("");
 
   const listText = useMemo(() => {
     const lines: string[] = [];
@@ -82,10 +85,19 @@ export default function ExportPanel({
         <head>
           <title>Ben & Meredith's Grocery List</title>
           <style>
-            body { font-family: ui-monospace, Menlo, Consolas, monospace; white-space: pre-wrap; padding: 40px; font-size: 14px; line-height: 1.6; color: #22303F; }
+            body { font-family: ui-monospace, Menlo, Consolas, monospace; margin: 0; color: #152238; }
+            .header { background: #1B2A4E; color: #FBF6EC; padding: 24px 40px; font-size: 18px; letter-spacing: 0.05em; }
+            .header .sub { font-size: 12px; color: #D8B87E; margin-top: 4px; letter-spacing: 0.15em; text-transform: uppercase; }
+            pre { white-space: pre-wrap; padding: 24px 40px; font-size: 14px; line-height: 1.6; margin: 0; }
           </style>
         </head>
-        <body>${listText.replace(/</g, "&lt;")}</body>
+        <body>
+          <div class="header">
+            Ben &amp; Meredith's Grocery List
+            <div class="sub">Kukio, Hawaii &middot; ${formatVisitDate(visitDate)}</div>
+          </div>
+          <pre>${listText.replace(/</g, "&lt;")}</pre>
+        </body>
       </html>
     `);
     win.document.close();
@@ -95,7 +107,7 @@ export default function ExportPanel({
 
   async function handleSubmit() {
     setSubmitError(null);
-    const result = await onSubmit();
+    const result = await onSubmit(submittedBy);
     if (result.ok) {
       setSubmitState("saved");
     } else {
@@ -135,26 +147,41 @@ export default function ExportPanel({
           className="w-full bg-white/40 border border-manifest-line font-mono text-xs p-3 leading-relaxed resize-none focus:border-manifest-lagoon"
         />
 
-        <div className="mt-4 flex flex-wrap gap-3">
+        <div className="mt-4 flex flex-wrap items-center gap-3">
           <button
             type="button"
             onClick={handleCopy}
-            className="font-mono text-xs uppercase tracking-wide bg-manifest-lagoon text-manifest-paper px-4 py-2 hover:bg-manifest-lagoonDark"
+            className="font-mono text-xs uppercase tracking-wide bg-manifest-lagoon text-manifest-paper px-4 py-2 rounded-full hover:bg-manifest-lagoonDark"
           >
             {copyState === "copied" ? "Copied ✓" : "Copy list"}
           </button>
           <button
             type="button"
             onClick={handlePrint}
-            className="font-mono text-xs uppercase tracking-wide border-2 border-manifest-ink px-4 py-2 hover:bg-manifest-ink hover:text-manifest-paper"
+            className="font-mono text-xs uppercase tracking-wide border-2 border-manifest-ink px-4 py-2 rounded-full hover:bg-manifest-ink hover:text-manifest-paper"
           >
             Print / Save PDF
           </button>
+        </div>
+
+        <div className="mt-4 pt-4 border-t border-manifest-line flex flex-wrap items-center gap-3">
+          <select
+            value={submittedBy}
+            onChange={(e) => setSubmittedBy(e.target.value)}
+            className="font-mono text-xs uppercase tracking-wide border-2 border-manifest-line rounded-full px-3 py-2 bg-white/50 focus:border-manifest-lagoon"
+          >
+            <option value="">Who's submitting?</option>
+            {SUBMITTERS.map((name) => (
+              <option key={name} value={name}>
+                {name}
+              </option>
+            ))}
+          </select>
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={submitting || submitState === "saved"}
-            className="font-mono text-xs uppercase tracking-wide bg-manifest-coral text-manifest-paper px-4 py-2 hover:opacity-90 disabled:opacity-60"
+            disabled={submitting || submitState === "saved" || !submittedBy}
+            className="font-mono text-xs uppercase tracking-wide bg-manifest-coral text-manifest-paper px-4 py-2 rounded-full hover:opacity-90 disabled:opacity-60"
           >
             {submitState === "saved" ? "Saved ✓" : submitting ? "Saving…" : "Save to history"}
           </button>
