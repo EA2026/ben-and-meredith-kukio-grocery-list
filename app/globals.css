@@ -15,13 +15,13 @@ html {
 body {
   background-color: #FBF6EC;
   background-image:
-    radial-gradient(circle at 1px 1px, rgba(18, 38, 31, 0.06) 1px, transparent 0);
+    radial-gradient(circle at 1px 1px, rgba(21, 34, 56, 0.06) 1px, transparent 0);
   background-size: 22px 22px;
 }
 
 /* Visible keyboard focus everywhere */
 :focus-visible {
-  outline: 2px solid #0B6E64;
+  outline: 2px solid #1B2A4E;
   outline-offset: 2px;
 }
 
@@ -35,7 +35,7 @@ body {
 }
 
 .horizon-hero {
-  background: linear-gradient(165deg, #0B6E64 0%, #C24A6E 55%, #F4B740 100%);
+  background: #1B2A4E;
   position: relative;
   overflow: hidden;
 }
@@ -43,7 +43,7 @@ body {
 .horizon-glow {
   position: absolute;
   border-radius: 9999px;
-  background: radial-gradient(circle, rgba(244, 183, 64, 0.95) 0%, rgba(244, 183, 64, 0.2) 60%, transparent 75%);
+  background: radial-gradient(circle, rgba(176, 129, 62, 0.95) 0%, rgba(176, 129, 62, 0.2) 60%, transparent 75%);
   filter: blur(2px);
 }
 
@@ -52,12 +52,24 @@ body {
   opacity: 0.85;
 }
 
-.horizon-wave {
+/* Torn-ticket perforation divider — replaces the generic wave shape */
+.ticket-perforation {
   position: absolute;
-  bottom: -1px;
+  bottom: -13px;
   left: 0;
   width: 100%;
-  line-height: 0;
+  height: 26px;
+  background-image: radial-gradient(circle, #FBF6EC 7px, transparent 7.5px);
+  background-size: 30px 30px;
+  background-position: 4px center;
+  background-repeat: repeat-x;
+  z-index: 1;
+}
+
+.ticket-tag {
+  display: inline-block;
+  border: 2px solid;
+  transform: rotate(-1.2deg);
 }
 
 .hero-eyebrow {
@@ -69,6 +81,6 @@ body {
 }
 
 ::selection {
-  background-color: #0B6E64;
+  background-color: #1B2A4E;
   color: #FBF6EC;
 }
