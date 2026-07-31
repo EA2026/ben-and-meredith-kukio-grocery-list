@@ -30,6 +30,7 @@ export default function HistoryPage() {
   const [error, setError] = useState<string | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
   const [seeding, setSeeding] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   async function loadRequests() {
     setError(null);
@@ -71,6 +72,25 @@ export default function HistoryPage() {
       setError("Couldn't load the historical visits right now.");
     } finally {
       setSeeding(false);
+    }
+  }
+
+  async function handleDelete(id: string, visitLabel: string) {
+    if (!window.confirm(`Delete the visit for ${visitLabel}? This can't be undone.`)) return;
+    setDeletingId(id);
+    setError(null);
+    try {
+      const res = await fetch(`/api/requests?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "Couldn't delete this visit right now.");
+        return;
+      }
+      setRequests(data.requests ?? []);
+    } catch {
+      setError("Couldn't delete this visit right now.");
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -137,20 +157,31 @@ export default function HistoryPage() {
                   key={req.id}
                   className="bg-white/60 border border-manifest-line rounded-xl p-4"
                 >
-                  <button
-                    type="button"
-                    onClick={() => setOpenId(isOpen ? null : req.id)}
-                    className="w-full flex items-center justify-between text-left gap-3"
-                  >
-                    <span
-                      className={`ticket-tag ${badgeAccent} text-manifest-paper font-display text-lg sm:text-xl leading-none px-4 py-1.5`}
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setOpenId(isOpen ? null : req.id)}
+                      className="flex-1 flex items-center justify-between text-left gap-3"
                     >
-                      {formatVisitDate(req.visitDate)}
-                    </span>
-                    <span className="font-mono text-xs text-manifest-inkSoft shrink-0">
-                      {req.items.length} item{req.items.length === 1 ? "" : "s"} {isOpen ? "▲" : "▼"}
-                    </span>
-                  </button>
+                      <span
+                        className={`ticket-tag ${badgeAccent} text-manifest-paper font-display text-lg sm:text-xl leading-none px-4 py-1.5`}
+                      >
+                        {formatVisitDate(req.visitDate)}
+                      </span>
+                      <span className="font-mono text-xs text-manifest-inkSoft shrink-0">
+                        {req.items.length} item{req.items.length === 1 ? "" : "s"} {isOpen ? "▲" : "▼"}
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(req.id, formatVisitDate(req.visitDate))}
+                      disabled={deletingId === req.id}
+                      aria-label={`Delete visit for ${formatVisitDate(req.visitDate)}`}
+                      className="shrink-0 font-mono text-xs uppercase tracking-wide text-manifest-coral border border-manifest-coral/50 px-2.5 py-1.5 rounded-full hover:bg-manifest-coral hover:text-manifest-paper disabled:opacity-40"
+                    >
+                      {deletingId === req.id ? "…" : "✕"}
+                    </button>
+                  </div>
 
                   {isOpen && (
                     <div className="mt-4 grid sm:grid-cols-2 gap-4">
