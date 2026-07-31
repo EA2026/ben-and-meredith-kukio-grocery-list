@@ -27,7 +27,7 @@ module.exports = {
           cream: "#FBF6EC",
         },
         tropic: {
-          gold: "#B0813E",
+          gold: "#8F6428",
           plum: "#8B4A34",
           leaf: "#5C6E52",
           sky: "#46586B",
