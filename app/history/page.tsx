@@ -168,7 +168,10 @@ export default function HistoryPage() {
                       >
                         {formatVisitDate(req.visitDate)}
                       </span>
-                      <span className="font-mono text-xs text-manifest-inkSoft shrink-0">
+                      <span className="font-mono text-xs text-manifest-inkSoft shrink-0 text-right">
+                        {req.submittedBy && (
+                          <span className="block">by {req.submittedBy}</span>
+                        )}
                         {req.items.length} item{req.items.length === 1 ? "" : "s"} {isOpen ? "▲" : "▼"}
                       </span>
                     </button>
