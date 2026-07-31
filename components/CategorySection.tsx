@@ -13,6 +13,7 @@ interface Props {
   onQtyChange: (id: string, qty: string) => void;
   onAddItem: (name: string, category: string) => void;
   onPromote: (id: string) => void;
+  onDemote: (id: string) => void;
   onRemove: (id: string) => void;
 }
 
@@ -73,6 +74,7 @@ export default function CategorySection({
   onQtyChange,
   onAddItem,
   onPromote,
+  onDemote,
   onRemove,
 }: Props) {
   const [draft, setDraft] = useState("");
@@ -128,26 +130,30 @@ export default function CategorySection({
                 onClick={() => onToggle(item.id)}
               >
                 {item.name}
-                {item.status === "standing" ? (
-                  <span
-                    title="Standing item — confirmed on repeat visits"
-                    className="ml-1.5 text-manifest-coral"
-                  >
-                    ★
-                  </span>
-                ) : (
-                  <button
-                    type="button"
-                    title="Candidate item — click to confirm as standing"
-                    onClick={(e) => {
-                      e.stopPropagation();
+                <button
+                  type="button"
+                  title={
+                    item.status === "standing"
+                      ? "On your usual list — click to remove"
+                      : "Not on your usual list yet — click to add"
+                  }
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (item.status === "standing") {
+                      onDemote(item.id);
+                    } else {
                       onPromote(item.id);
-                    }}
-                    className={`ml-1.5 text-[11px] font-mono uppercase tracking-wide ${accent.text} border ${accent.border}/50 px-1.5 rounded-full ${accent.hoverBg} hover:text-manifest-paper`}
-                  >
-                    new
-                  </button>
-                )}
+                    }
+                  }}
+                  aria-pressed={item.status === "standing"}
+                  className={`ml-1.5 align-middle text-base leading-none ${
+                    item.status === "standing"
+                      ? "text-tropic-gold"
+                      : "text-manifest-inkSoft/30 hover:text-tropic-gold/70"
+                  }`}
+                >
+                  ★
+                </button>
                 {item.note && (
                   <span className="block text-xs italic text-manifest-inkSoft/80 mt-0.5">
                     {item.note}
