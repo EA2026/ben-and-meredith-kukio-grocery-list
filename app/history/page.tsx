@@ -3,6 +3,17 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { VisitRequest } from "@/lib/kv";
+import { CATEGORY_ORDER } from "@/lib/masterList";
+
+// Same accent cycle used on the main checklist and Usual List page.
+const ACCENTS = [
+  "bg-manifest-coral",
+  "bg-manifest-lagoon",
+  "bg-tropic-gold",
+  "bg-tropic-plum",
+  "bg-tropic-leaf",
+  "bg-tropic-sky",
+];
 
 function formatVisitDate(iso: string) {
   const [year, month, day] = iso.split("-").map(Number);
@@ -71,18 +82,20 @@ export default function HistoryPage() {
             <p className="font-mono text-xs uppercase tracking-[0.3em] text-manifest-lagoon mb-2">
               Ben &amp; Meredith · Kukio
             </p>
-            <h1 className="font-display text-3xl sm:text-4xl text-manifest-ink">Past Visits</h1>
+            <h1 className="inline-block bg-manifest-lagoon text-manifest-paper font-display text-3xl sm:text-4xl px-4 py-1 rounded">
+              Past Visits
+            </h1>
           </div>
           <Link
             href="/"
-            className="font-mono text-xs uppercase tracking-wide border-2 border-manifest-ink px-4 py-2 hover:bg-manifest-ink hover:text-manifest-paper shrink-0"
+            className="font-mono text-xs uppercase tracking-wide border-2 border-manifest-ink px-4 py-2 hover:bg-manifest-ink hover:text-manifest-paper shrink-0 rounded-full"
           >
             ← Back to list
           </Link>
         </div>
 
         {error && (
-          <div className="mb-6 border border-manifest-coral text-manifest-coral text-sm p-3">
+          <div className="mb-6 border border-manifest-coral text-manifest-coral text-sm p-3 rounded-lg">
             {error}
           </div>
         )}
@@ -101,7 +114,7 @@ export default function HistoryPage() {
               type="button"
               onClick={handleSeed}
               disabled={seeding}
-              className="font-mono text-xs uppercase tracking-wide border-2 border-manifest-ink px-4 py-2 hover:bg-manifest-ink hover:text-manifest-paper disabled:opacity-60"
+              className="font-mono text-xs uppercase tracking-wide border-2 border-manifest-ink px-4 py-2 hover:bg-manifest-ink hover:text-manifest-paper disabled:opacity-60 rounded-full"
             >
               {seeding ? "Loading…" : "Load past visits (12/31/24 & 5/26/25)"}
             </button>
@@ -109,34 +122,57 @@ export default function HistoryPage() {
         )}
 
         {!error && requests !== null && requests.length > 0 && (
-          <div className="space-y-1">
-            {requests.map((req) => {
+          <div className="space-y-4">
+            {requests.map((req, reqIndex) => {
               const isOpen = openId === req.id;
+              const badgeAccent = ACCENTS[reqIndex % ACCENTS.length];
+
+              const byCategory = CATEGORY_ORDER.map((category) => ({
+                category,
+                items: req.items.filter((i) => i.category === category),
+              })).filter((g) => g.items.length > 0);
+
               return (
-                <div key={req.id} className="border-b border-manifest-line py-4">
+                <div
+                  key={req.id}
+                  className="bg-white/60 border border-manifest-line rounded-xl p-4"
+                >
                   <button
                     type="button"
                     onClick={() => setOpenId(isOpen ? null : req.id)}
-                    className="w-full flex items-center justify-between text-left"
+                    className="w-full flex items-center justify-between text-left gap-3"
                   >
-                    <span className="text-base font-medium">{formatVisitDate(req.visitDate)}</span>
-                    <span className="font-mono text-xs text-manifest-inkSoft">
+                    <span
+                      className={`ticket-tag ${badgeAccent} text-manifest-paper font-display text-lg sm:text-xl leading-none px-4 py-1.5`}
+                    >
+                      {formatVisitDate(req.visitDate)}
+                    </span>
+                    <span className="font-mono text-xs text-manifest-inkSoft shrink-0">
                       {req.items.length} item{req.items.length === 1 ? "" : "s"} {isOpen ? "▲" : "▼"}
                     </span>
                   </button>
 
                   {isOpen && (
-                    <div className="mt-3 pl-1 text-sm space-y-3">
-                      <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-0.5 text-manifest-inkSoft">
-                        {req.items.map((item, idx) => (
-                          <li key={idx}>
-                            — {item.name}
-                            {item.qty ? ` (${item.qty})` : ""}
-                          </li>
-                        ))}
-                      </ul>
+                    <div className="mt-4 grid sm:grid-cols-2 gap-4">
+                      {byCategory.map(({ category, items: catItems }, catIndex) => (
+                        <div key={category}>
+                          <span
+                            className={`inline-block ${ACCENTS[catIndex % ACCENTS.length]} text-manifest-paper font-mono text-[10px] font-bold tracking-[0.2em] uppercase px-2.5 py-1 rounded mb-1.5`}
+                          >
+                            {category}
+                          </span>
+                          <ul className="text-sm text-manifest-inkSoft space-y-0.5">
+                            {catItems.map((item, idx) => (
+                              <li key={idx}>
+                                — {item.name}
+                                {item.qty ? ` (${item.qty})` : ""}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
                       {req.groceryNotes && (
-                        <p>
+                        <p className="sm:col-span-2 text-sm">
                           <span className="font-mono text-xs uppercase text-manifest-coral">
                             Trip request:{" "}
                           </span>
