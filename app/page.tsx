@@ -154,7 +154,10 @@ export default function Home() {
           </section>
 
           {/* Actions */}
-          <footer className="sticky bottom-4 flex flex-wrap items-center gap-3 bg-manifest-paper/95 backdrop-blur-sm border-2 border-manifest-ink rounded-2xl px-4 py-3 shadow-[4px_4px_0_0_rgba(18,38,31,0.9)]">
+          <footer
+            className="sticky flex flex-wrap items-center gap-3 bg-manifest-paper/95 backdrop-blur-sm border-2 border-manifest-ink rounded-2xl px-4 py-3 shadow-[4px_4px_0_0_rgba(18,38,31,0.9)]"
+            style={{ bottom: "max(1rem, calc(env(safe-area-inset-bottom) + 0.5rem))" }}
+          >
             <span className="font-mono text-xs text-manifest-inkSoft tabular-nums mr-auto">
               {checkedTotal} item{checkedTotal === 1 ? "" : "s"} checked
             </span>
@@ -163,7 +166,7 @@ export default function Home() {
               onClick={resetTrip}
               className="font-mono text-xs uppercase tracking-wide text-manifest-inkSoft hover:text-manifest-ink px-2 py-2"
             >
-              Reset to defaults
+              Reset to usual list
             </button>
             <button
               type="button"
