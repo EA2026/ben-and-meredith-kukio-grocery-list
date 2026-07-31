@@ -77,6 +77,7 @@ export interface VisitRequest {
   createdAt: string; // ISO timestamp of when the request was submitted
   items: RequestItem[];
   groceryNotes: string;
+  submittedBy?: string;
 }
 
 export async function getRequests(): Promise<VisitRequest[]> {
@@ -110,6 +111,7 @@ const HISTORICAL_VISITS: VisitRequest[] = [
     visitDate: "2025-05-26",
     createdAt: "2025-05-26T00:00:00.000Z",
     groceryNotes: "",
+    submittedBy: "Imported record",
     items: [
       { name: "English muffins (Thomas' brand)", category: "Breakfast", qty: "2 boxes" },
       { name: "Coffeemate French Vanilla creamer", category: "Coffee & Tea" },
@@ -135,6 +137,7 @@ const HISTORICAL_VISITS: VisitRequest[] = [
     visitDate: "2024-12-31",
     createdAt: "2024-12-31T00:00:00.000Z",
     groceryNotes: "",
+    submittedBy: "Imported record",
     items: [
       { name: "Coffeemate French Vanilla creamer", category: "Coffee & Tea" },
       { name: "English muffins (Thomas' brand)", category: "Breakfast" },
