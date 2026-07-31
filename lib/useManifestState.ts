@@ -174,38 +174,42 @@ export function useManifestState() {
     setDraft(() => defaultDraft(items));
   }, [items]);
 
-  const submitRequest = useCallback(async (): Promise<{ ok: boolean; error?: string }> => {
-    if (!draft) return { ok: false, error: "Nothing to submit yet." };
-    setSubmitting(true);
-    try {
-      const requestItems = items
-        .filter((item) => draft.checked[item.id])
-        .map((item) => ({
-          name: item.name,
-          category: item.category,
-          qty: draft.quantities[item.id],
-        }));
+  const submitRequest = useCallback(
+    async (submittedBy: string): Promise<{ ok: boolean; error?: string }> => {
+      if (!draft) return { ok: false, error: "Nothing to submit yet." };
+      setSubmitting(true);
+      try {
+        const requestItems = items
+          .filter((item) => draft.checked[item.id])
+          .map((item) => ({
+            name: item.name,
+            category: item.category,
+            qty: draft.quantities[item.id],
+          }));
 
-      const res = await fetch("/api/requests", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: `req-${Date.now()}`,
-          visitDate: draft.visitDate,
-          createdAt: new Date().toISOString(),
-          items: requestItems,
-          groceryNotes: draft.groceryNotes,
-        }),
-      });
+        const res = await fetch("/api/requests", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: `req-${Date.now()}`,
+            visitDate: draft.visitDate,
+            createdAt: new Date().toISOString(),
+            items: requestItems,
+            groceryNotes: draft.groceryNotes,
+            submittedBy: submittedBy || undefined,
+          }),
+        });
 
-      if (!res.ok) throw new Error("Request failed");
-      return { ok: true };
-    } catch {
-      return { ok: false, error: "Couldn't save this to the shared history. You can still copy/print it below." };
-    } finally {
-      setSubmitting(false);
-    }
-  }, [draft, items]);
+        if (!res.ok) throw new Error("Request failed");
+        return { ok: true };
+      } catch {
+        return { ok: false, error: "Couldn't save this to the shared history. You can still copy/print it below." };
+      } finally {
+        setSubmitting(false);
+      }
+    },
+    [draft, items]
+  );
 
   const state =
     draft && catalogLoaded
