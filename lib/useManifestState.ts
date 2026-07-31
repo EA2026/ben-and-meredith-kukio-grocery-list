@@ -150,6 +150,13 @@ export function useManifestState() {
     [items]
   );
 
+  const demoteToCandidate = useCallback(
+    (id: string) => {
+      syncCatalog(items.map((item) => (item.id === id ? { ...item, status: "candidate" } : item)));
+    },
+    [items]
+  );
+
   const removeItem = useCallback(
     (id: string) => {
       syncCatalog(items.filter((item) => item.id !== id));
@@ -221,6 +228,7 @@ export function useManifestState() {
     setVisitDate,
     addItem,
     promoteToStanding,
+    demoteToCandidate,
     removeItem,
     resetTrip,
     submitRequest,
